@@ -1,4 +1,4 @@
-name: Validar compilación con Docker 
+name: Validar compilación con Docker
 
 on:
   push:
@@ -11,23 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar el repositorio
+      - name: Clonar repo
         uses: actions/checkout@v4
 
-      - name: Ver contenido del repositorio
-        run: ls -la && ls -la server
+      - name: Listar archivos del repo
+        run: |
+          pwd
+          ls -la
+          ls -la server || echo "No existe carpeta server"
 
-      - name: Login a DockerHub
+      - name: Login DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Configurar Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Ejecutar Docker Bake
+      - name: Ejecutar Docker Bake con logs detallados
         uses: docker/bake-action@v4
         with:
           source: docker-bake.hcl
           push: false
+          progress: plain
