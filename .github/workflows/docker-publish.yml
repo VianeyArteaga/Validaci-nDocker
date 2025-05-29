@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repo
+      - name: Clonar el repositorio
         uses: actions/checkout@v4
 
       - name: Listar archivos del repo
@@ -20,18 +20,15 @@ jobs:
           ls -la
           ls -la server || echo "No existe carpeta server"
 
-      - name: Login DockerHub
+      - name: Login a DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Setup Docker Buildx
+      - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Ejecutar Docker Bake con logs detallados
-        uses: docker/bake-action@v4
-        with:
-          source: docker-bake.hcl
-          push: false
-          progress: plain
+      - name: Ejecutar Docker Bake con salida detallada
+        run: |
+          docker buildx bake --file docker-bake.hcl --progress=plain
